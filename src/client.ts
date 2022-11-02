@@ -2,7 +2,7 @@ import type { AxiosInstance } from 'axios'
 
 import axios from 'axios'
 import { createHmac } from 'crypto'
-import { ShopeeAccessTokenResponse } from './models/ShopeeAccessTokenResponse'
+import { ShopeeAccessTokenResponse } from './models'
 
 
 /**
