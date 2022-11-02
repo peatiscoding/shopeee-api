@@ -3,6 +3,7 @@ import type { AxiosInstance } from 'axios'
 import axios from 'axios'
 import { createHmac } from 'crypto'
 import { ShopeeAccessTokenResponse } from './models'
+import { ShopeeTokensStorage } from './storage'
 
 
 /**
@@ -12,6 +13,7 @@ export class ShopeeOpenApiV2Client {
 
   private ax: AxiosInstance
   private readonly host: string
+  private storage?: ShopeeTokensStorage
 
   /**
    * Create a shopeeApiInstance!
@@ -31,6 +33,10 @@ export class ShopeeOpenApiV2Client {
     this.ax = axios.create({
       baseURL: this.host,
     })
+  }
+
+  public setStorage(storage: ShopeeTokensStorage) {
+    this.storage = storage
   }
 
   /**
@@ -73,6 +79,41 @@ export class ShopeeOpenApiV2Client {
     if (resData.error) {
       console.warn('REQ', resp.config)
       throw new Error(`Invalid ShopeeAPI response, status: ${resp.status} response with error: ${JSON.stringify(resData.error)}, message: ${resData.message}, resp: ${JSON.stringify(resData)}`)
+    }
+    if (this.storage) {
+      await this.storage?.saveTokens(shopId, resData)
+    }
+    return resData
+  }
+
+  public async refreshToken(currentRefreshToken: string, shopId: string): Promise<ShopeeAccessTokenResponse> {
+    const path = '/api/v2/auth/access_token/get'
+    const body = {
+      refresh_token: currentRefreshToken,
+      shop_id: +shopId,
+      partner_id: +this.partnerId,
+    }
+    const s = this.sign(path)
+    const resp = await this.ax.post(path, body, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      params: {
+        partner_id: this.partnerId,
+        timestamp: s.timest,
+        sign: s.signature,
+      }
+    })
+    if (!resp || !resp.data) {
+      throw new Error(`Invalid ShopeeAPI response, status: ${resp.status} with empty payload!`)
+    }
+    const resData = resp.data as ShopeeAccessTokenResponse
+    if (resData.error) {
+      console.warn('REQ', resp.config)
+      throw new Error(`Invalid ShopeeAPI response, status: ${resp.status} response with error: ${JSON.stringify(resData.error)}, message: ${resData.message}, resp: ${JSON.stringify(resData)}`)
+    }
+    if (this.storage) {
+      await this.storage?.saveTokens(shopId, resData)
     }
     return resData
   }
