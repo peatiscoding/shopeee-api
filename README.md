@@ -1,7 +1,8 @@
 Shopee API Client: shopeee-api
 ==
 
-- Very untidy implementation of Shopee API Client.
+- Very dirty implementation of Shopee API Client.
+- Follow: https://open.shopee.com/developer-guide/20
 
 # Feature
 
@@ -37,7 +38,6 @@ const client = new ShopeeOpenApiV2Client(
 ```ts
 const url = client.getAuthorizationLink('http://localhost:3000/your/exchange/authorization/endpoint')
 ```
-
 
 ## Exchange for AccessToken, RefreshToken
 
