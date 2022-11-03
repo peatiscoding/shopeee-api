@@ -95,6 +95,32 @@ client.setStorage({
 
 Once configured our client.getAccessToken() will now call `storage.saveTokens()` automatically.
 
+## Shop Context
+
+Within shopee APIs, there are APIs those do not need shop, and its accessToken, and there are APIs that needs.
+
+We separate these API that need to aware of its context by let the consumer choose when to access it. And provide the set of Tokens on your own. Or just let it automatically managed if you has adopt `setStorage` option.
+
+### With Static Token
+
+```ts
+// TODO: Retrieve your tokens (access_token + refresh_token) by shopId.
+const context = client.createContext(tokens, shopId)
+// THIS API: https://open.shopee.com/documents/v2/v2.product.get_category?module=89&type=1
+const categories = await context.getCategory()
+```
+
+### With Managed Tokens
+
+If your tokens has been mismanaged error will be thrown (complaining that the Token for such shopId is missing.) This error will be thrown when the desired API is invoked.
+
+```ts
+// TODO: Create the client with setStorage options.
+const context = client.createContextFromStorage(shopId)
+// THIS API: https://open.shopee.com/documents/v2/v2.product.get_category?module=89&type=1
+const categories = await context.getCategory()
+```
+
 # To Test
 
 Configure your `.env` file. (See `.env.example`)

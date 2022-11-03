@@ -13,6 +13,7 @@ import { ShopeeOpenApiV2Client } from './client'
 import { ShopeeTokens, ShopeeTokensStorage } from './storage'
 import { createServer } from 'http'
 import { parse as parseUrl } from 'url'
+import { ShopeeCategoryResponse } from './models'
 
 const partnerId = process.env.PARTNER_ID || ''
 const partnerKey = process.env.PARTNER_KEY || ''
@@ -41,14 +42,16 @@ client.setStorage(storage)
  * @param shopId 
  * @returns 
  */
-const runTest = async (code: string, shopId: string): Promise<ShopeeTokens> => {
+const runTest = async (code: string, shopId: string): Promise<ShopeeCategoryResponse> => {
   await client.getAccessToken(code, shopId)
   const tokens = await storage.loadTokens(shopId)
   if (!tokens) {
     throw new Error('Hmmmmm, token should have been saved!')
   }
   const refreshed = await client.refreshToken(tokens.refresh_token, shopId)
-  return refreshed
+  const context = client.createContext(refreshed, shopId)
+  const categories = await context.getCategory()
+  return categories
 }
 
 /**
@@ -73,7 +76,7 @@ const run = async () => {
         res.write(JSON.stringify(message))
       })
       .catch((err) => {
-        console.log('Opps something failed during tests. Check the logs 🪵', err)
+        console.log('Opps something failed during tests. Check the logs 🪵', err?.response.data)
         res.statusCode = 500
         res.write(err && err.message || err)
       })

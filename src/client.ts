@@ -1,10 +1,87 @@
-import type { AxiosInstance } from 'axios'
+import type { AxiosInstance, AxiosResponse } from 'axios'
 
 import axios from 'axios'
 import { createHmac } from 'crypto'
-import { ShopeeAccessTokenResponse } from './models'
+import { url } from 'inspector'
+import { ShopeeTokens } from '../dist'
+import {
+  ShopeeAccessTokenResponse,
+  ShopeeBaseResponse,
+  ShopeeCategoryResponse,
+} from './models'
 import { ShopeeTokensStorage } from './storage'
 
+const getHost = (env: 'prod' | 'sandbox') => env === 'prod'
+  ? 'https://partner.shopeemobile.com'
+  : 'https://partner.test-stable.shopeemobile.com'
+
+const shopeeResponseHandler = (resp: AxiosResponse): AxiosResponse => {
+  if (!resp || !resp.data) {
+    throw new Error(`Invalid ShopeeAPI response, status: ${resp.status} with empty payload!`)
+  }
+  const resData = resp.data as ShopeeBaseResponse
+  if (resData.error) {
+    console.warn('>> REQ FAILED', resp.config.url)
+    throw new Error(`Invalid ShopeeAPI response, status: ${resp.status} response with error: ${JSON.stringify(resData.error)}, message: ${resData.message}, resp: ${JSON.stringify(resData)}`)
+  }
+  return resp
+}
+
+export class ShopContext {
+  public readonly ax: AxiosInstance
+
+  public constructor(
+    public readonly host: string,
+    public readonly partnerId: string,
+    public readonly partnerKey: string,
+    public readonly shopId: string,
+    public readonly accessTokenProvider: () => ShopeeTokens | Promise<ShopeeTokens>) {
+    this.ax = axios.create({
+      baseURL: this.host,
+    })
+    this.ax.interceptors.request.use(async (config) => {
+      if (config.url) {
+        const path = config.url
+        const s = await this.sign(path)
+        config.params = config.params || {}
+        config.params.partner_id = this.partnerId
+        config.params.timestamp = s.timest
+        config.params.access_token = s.accessToken
+        config.params.shop_id = shopId
+        config.params.sign = s.signature
+      }
+      return config
+    })
+    this.ax.interceptors.response.use(shopeeResponseHandler)
+  }
+
+  /**
+   * List all categories provided by Shopee's service
+   * 
+   * @param language 
+   */
+  public async getCategory(language?: string): Promise<ShopeeCategoryResponse> {
+    const path = '/api/v2/product/get_category'
+    const resp = await this.ax.get(path, {
+      params: {
+        // language,
+      },
+    })
+    return resp.data as ShopeeCategoryResponse
+  }
+
+  private async sign(path: string): Promise<{ timest: string, signature: string, accessToken: string }> {
+    const tokens = await this.accessTokenProvider()
+    if (!tokens) {
+      throw new Error(`ShopeeTokens for: ${this.shopId} cannot be found. Please recheck your accessTokenProvider/storage.`)
+    }
+    const s = ShopeeOpenApiV2Client.createSignature(path, this.partnerId, this.partnerKey, tokens.access_token, this.shopId)
+    return {
+      ...s,
+      accessToken: tokens.access_token,
+    }
+  }
+}
 
 /**
  * ShopeeOpenAPI (v2)
@@ -29,10 +106,8 @@ export class ShopeeOpenApiV2Client {
     public readonly partnerId: string,
     public readonly partnerKey: string,
   ) {
-    this.host = env === 'prod'
-      ? 'https://partner.shopeemobile.com'
-      : 'https://partner.test-stable.shopeemobile.com'
     // create axios instance.
+    this.host = getHost(env)
     this.ax = axios.create({
       baseURL: this.host,
     })
@@ -49,6 +124,7 @@ export class ShopeeOpenApiV2Client {
       }
       return config
     })
+    this.ax.interceptors.response.use(shopeeResponseHandler)
   }
 
   public setStorage(storage: ShopeeTokensStorage) {
@@ -70,70 +146,108 @@ export class ShopeeOpenApiV2Client {
     return url.toString()
   }
 
+  /**
+   * Use this API to exchange authorizeCode for accessToken + refreshToken
+   *
+   * @param authorizationCode 
+   * @param shopId 
+   * @returns 
+   */
   public async getAccessToken(authorizationCode: string, shopId: string): Promise<ShopeeAccessTokenResponse> {
     const path = '/api/v2/auth/token/get'
-    const body = {
+    const resp = await this.ax.post(path, {
       code: authorizationCode,
       shop_id: +shopId,
       partner_id: +this.partnerId,
-    }
-    const resp = await this.ax.post(path, body, {
+    }, {
       headers: {
         'Content-Type': 'application/json',
       },
     })
-    if (!resp || !resp.data) {
-      throw new Error(`Invalid ShopeeAPI response, status: ${resp.status} with empty payload!`)
-    }
     const resData = resp.data as ShopeeAccessTokenResponse
-    if (resData.error) {
-      console.warn('REQ', resp.config)
-      throw new Error(`Invalid ShopeeAPI response, status: ${resp.status} response with error: ${JSON.stringify(resData.error)}, message: ${resData.message}, resp: ${JSON.stringify(resData)}`)
-    }
     if (this.storage) {
       await this.storage?.saveTokens(shopId, resData)
     }
     return resData
   }
 
+  /**
+   * Use this API to exchange about to expired refreshToken for new accessToken + refreshToken
+   *
+   * @param currentRefreshToken 
+   * @param shopId 
+   * @returns 
+   */
   public async refreshToken(currentRefreshToken: string, shopId: string): Promise<ShopeeAccessTokenResponse> {
     const path = '/api/v2/auth/access_token/get'
-    const body = {
+    const resp = await this.ax.post(path, {
       refresh_token: currentRefreshToken,
       shop_id: +shopId,
       partner_id: +this.partnerId,
-    }
-    const resp = await this.ax.post(path, body, {
+    }, {
       headers: {
         'Content-Type': 'application/json',
       },
     })
-    if (!resp || !resp.data) {
-      throw new Error(`Invalid ShopeeAPI response, status: ${resp.status} with empty payload!`)
-    }
     const resData = resp.data as ShopeeAccessTokenResponse
-    if (resData.error) {
-      console.warn('REQ', resp.config)
-      throw new Error(`Invalid ShopeeAPI response, status: ${resp.status} response with error: ${JSON.stringify(resData.error)}, message: ${resData.message}, resp: ${JSON.stringify(resData)}`)
-    }
     if (this.storage) {
       await this.storage?.saveTokens(shopId, resData)
     }
     return resData
+  }
+
+  /**
+   * Create a context from staticAccessToken
+   * 
+   * @param staticTokens 
+   * @param shopId 
+   * @returns 
+   */
+  public createContext(staticTokens: ShopeeTokens, shopId: string): ShopContext {
+    return new ShopContext(
+      this.host,
+      this.partnerId,
+      this.partnerKey,
+      shopId,
+      () => staticTokens,
+    )
+  }
+
+  /**
+   * Create a context by provide the static accessToken!
+   * 
+   * @param shopId 
+   * @returns 
+   */
+  public createContextFromStorage(shopId: string): ShopContext {
+    return new ShopContext(
+      this.host,
+      this.partnerId,
+      this.partnerKey,
+      shopId,
+      async () => {
+        const tokens = await this.storage?.loadTokens(shopId)
+        if (!tokens) {
+          throw new Error(`No token cannot be found for: ${shopId}`)
+        }
+        return tokens
+      },
+    )
   }
 
   private sign(path: string): { timest: string, signature: string } {
     return ShopeeOpenApiV2Client.createSignature(path, this.partnerId, this.partnerKey)
   }
 
-  public static createSignature(path: string, partnerId: string, partnerKey: string): { timest: string, signature: string } {
+  public static createSignature(path: string, partnerId: string, partnerKey: string, accessToken?: string, shopId?: string): { timest: string, signature: string, accessToken?: string } {
     const timest = `${Math.floor(new Date().getTime() / 1000)}`
-    const payload = [partnerId, path, timest].join('')
+    const payload = [partnerId, path, timest, accessToken || '', shopId || ''].join('')
     const hmac = createHmac('sha256', partnerKey)
     const signature = hmac.update(payload).digest('hex')
     return {
       timest,
       signature,
+      accessToken,
     }
   }
 }
