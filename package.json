@@ -8,7 +8,7 @@
   "scripts": {
     "clean": "rm -rf dist/",
     "build": "tsup src/index.ts --format cjs,esm --dts --clean",
-    "test": "ts-node src/example.ts"
+    "demo": "ts-node src/demo.ts"
   },
   "engines": {
     "node": ">=14"

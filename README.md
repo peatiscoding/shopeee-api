@@ -102,5 +102,5 @@ Configure your `.env` file. (See `.env.example`)
 then simply runs:
 
 ```
-npm run test
+npm run demo
 ```

@@ -1,6 +1,13 @@
 import * as dotenv from 'dotenv' // or use `ts-node -r dotenv/config src/run.ts`
 dotenv.config()
 
+/**
+ * THIS IS NOT INCLUDED IN LIBRARY
+ * IT USES MANY DEV PACKAGES AS THIS LIB WONT SHIP WITH.
+ * 
+ * THIS FILE IS JUST FOR SAKE OF DEMONSTRATION.
+ */
+
 import open from 'open'
 import { ShopeeOpenApiV2Client } from './client'
 import { ShopeeTokens, ShopeeTokensStorage } from './storage'
