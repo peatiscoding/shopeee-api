@@ -62,6 +62,7 @@ const runTest = async (code: string, shopId: string): Promise<any> => {
   return {
     shopInfo,
     profileInfo,
+    products,
     categories,
   }
 }

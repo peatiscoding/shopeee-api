@@ -17,7 +17,7 @@ export const shopeeResponseHandler = (resp: AxiosResponse): AxiosResponse => {
   }
   const resData = resp.data as ShopeeBaseResponse
   if (resData.error) {
-    console.warn('>> REQ FAILED', resp.config.url)
+    console.warn('>> REQ FAILED', resp.config.url, resp.data)
     throw new Error(`Invalid ShopeeAPI response, status: ${resp.status} response with error: ${JSON.stringify(resData.error)}, message: ${resData.message}, resp: ${JSON.stringify(resData)}`)
   }
   return resp

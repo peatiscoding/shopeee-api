@@ -9,7 +9,22 @@ export type ShopeeProductItemStatus = 'NORMAL' | 'UNLIST' | 'BANNED' | 'DELETED'
  * 
  * ```json
  * {
- * }
+ *   "error": "",
+ *   "message": "",
+ *   "warning": "",
+ *   "request_id": "159ef3b9216fd3e799a4db4453c22720",
+ *   "response": {
+ *     "item": [
+ *       {
+ *         "item_id": 1830497,
+ *         "item_status": "NORMAL",
+ *         "update_time": 1667488380
+ *       }
+ *     ],
+ *     "total_count": 1,
+ *     "has_next_page": false
+ *   }
+ * },
  * ```
  */ 
 export interface ShopeeProductItemId {

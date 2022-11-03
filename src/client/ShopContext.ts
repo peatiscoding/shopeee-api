@@ -4,6 +4,7 @@ import type {
 } from 'axios'
 
 import axios from 'axios'
+import { stringify } from 'querystring'
 import {
   ShopeeCategoryResponse,
   ShopeeShopInfoResponse,
@@ -28,6 +29,7 @@ export class ShopContext {
   ) {
     this.ax = axios.create({
       baseURL: this.host,
+      paramsSerializer: stringify,
     })
     this.ax.interceptors.request.use(signer.interceptor())
     this.ax.interceptors.response.use(
@@ -92,7 +94,7 @@ export class ShopContext {
         page_size: pageSize,
         update_time_from: opts?.updateTimeFrom,
         update_time_to: opts?.updateTimeTo,
-        item_status: opts?.itemStatus || ['NORMAL'],
+        item_status: opts?.itemStatus || ['NORMAL', 'UNLIST'],
       }
     })
     return resp.data as ShopeeProductGetItemListResponse
