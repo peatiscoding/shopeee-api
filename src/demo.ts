@@ -48,8 +48,14 @@ const runTest = async (code: string, shopId: string): Promise<any> => {
     throw new Error('Hmmmmm, token should have been saved!')
   }
   const refreshed = await client.refreshToken(tokens.refresh_token, shopId)
-  const context = client.createContext(refreshed, shopId)
+  const context = client.createShopContext(shopId)
   const categories = await context.getCategory()
+  // Break my token!
+  console.warn('Destroy accessToken, to force refresh trigger..')
+  context.signer.storage.saveTokens(shopId, {
+    ...refreshed,
+    access_token: 'broken-token',
+  })
   const shopInfo = await context.getShopInfo()
   const profileInfo = await context.getProfileInfo()
   return {
