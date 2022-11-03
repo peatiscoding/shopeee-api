@@ -53,7 +53,7 @@ const run = async () => {
   await open(url)
 
   // Create server awaits for redirect URL
-  const sv = createServer(async (req, res) => {
+  const sv = createServer((req, res) => {
     const queryObject = parseUrl(req.url ?? '', true).query
     const code = `${queryObject['code']}`
     const shopId = `${queryObject['shop_id']}`
