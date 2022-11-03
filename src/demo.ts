@@ -58,6 +58,7 @@ const runTest = async (code: string, shopId: string): Promise<any> => {
   })
   const shopInfo = await context.getShopInfo()
   const profileInfo = await context.getProfileInfo()
+  const products = await context.getProductItemList(10)
   return {
     shopInfo,
     profileInfo,

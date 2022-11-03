@@ -127,6 +127,7 @@ const categories = await context.getCategory()
 await context.getShopInfo()
 await context.getProfileInfo()
 await context.getCategory()
+await context.getProductItemList(20)
 ```
 
 # To Test

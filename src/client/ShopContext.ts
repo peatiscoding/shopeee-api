@@ -52,6 +52,8 @@ export class ShopContext {
   }
 
   /**
+   * Fetch Shop's Info
+   * 
    * @see https://open.shopee.com/documents/v2/v2.shop.get_shop_info?module=92&type=1
    */
   public async getShopInfo(): Promise<ShopeeShopInfoResponse> {
@@ -61,6 +63,8 @@ export class ShopContext {
   }
 
   /**
+   * Fetch Shop's Profile Info
+   * 
    * @see https://open.shopee.com/documents/v2/v2.shop.get_profile?module=92&type=1
    */
   public async getProfileInfo(): Promise<ShopeeProfileInfoResponse> {
@@ -70,23 +74,25 @@ export class ShopContext {
   }
 
   /**
+   * Fetch product item id from Shopee
+   * 
    * @see https://open.shopee.com/documents/v2/v2.product.get_item_list?module=89&type=1
    * 
-   * @param offset
    * @param pageSize 
+   * @param offset default is 0
    * @param opts.updateTimeFrom
    * @param opts.updateTimeTo
    * @param opts.itemStatus
    */
-  public async getProductItemList(offset: number, pageSize: number, opts: Partial<{ updateTimeFrom: number, updateTimeTo: number, itemStatus: ShopeeProductItemStatus[] }>): Promise<ShopeeProductGetItemListResponse> {
+  public async getProductItemList(pageSize: number = 20, offset: number = 0, opts?: Partial<{ updateTimeFrom: number, updateTimeTo: number, itemStatus: ShopeeProductItemStatus[] }>): Promise<ShopeeProductGetItemListResponse> {
     const path = '/api/v2/product/get_item_list'
     const resp = await this.ax.get(path, {
       params: {
         offset,
         page_size: pageSize,
-        update_time_from: opts.updateTimeFrom,
-        update_time_to: opts.updateTimeTo,
-        item_status: opts.itemStatus || ['NORMAL'],
+        update_time_from: opts?.updateTimeFrom,
+        update_time_to: opts?.updateTimeTo,
+        item_status: opts?.itemStatus || ['NORMAL'],
       }
     })
     return resp.data as ShopeeProductGetItemListResponse
