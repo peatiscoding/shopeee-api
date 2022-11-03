@@ -2,12 +2,13 @@ import type { AxiosInstance, AxiosResponse } from 'axios'
 
 import axios from 'axios'
 import { createHmac } from 'crypto'
-import { url } from 'inspector'
 import { ShopeeTokens } from '../dist'
 import {
-  ShopeeAccessTokenResponse,
   ShopeeBaseResponse,
+  ShopeeAccessTokenResponse,
   ShopeeCategoryResponse,
+  ShopeeShopInfoResponse,
+  ShopeeProfileInfoResponse,
 } from './models'
 import { ShopeeTokensStorage } from './storage'
 
@@ -64,10 +65,25 @@ export class ShopContext {
     const path = '/api/v2/product/get_category'
     const resp = await this.ax.get(path, {
       params: {
-        // language,
+        language,
       },
     })
     return resp.data as ShopeeCategoryResponse
+  }
+
+  /**
+   * @see https://open.shopee.com/documents/v2/v2.shop.get_shop_info?module=92&type=1
+   */
+  public async getShopInfo(): Promise<ShopeeShopInfoResponse> {
+    const path = '/api/v2/shop/get_shop_info'
+    const resp = await this.ax.get(path)
+    return resp.data as ShopeeShopInfoResponse
+  }
+
+  public async getProfileInfo(): Promise<ShopeeProfileInfoResponse> {
+    const path = '/api/v2/shop/get_profile'
+    const resp = await this.ax.get(path)
+    return resp.data as ShopeeProfileInfoResponse
   }
 
   private async sign(path: string): Promise<{ timest: string, signature: string, accessToken: string }> {

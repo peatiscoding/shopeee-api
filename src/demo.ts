@@ -13,7 +13,6 @@ import { ShopeeOpenApiV2Client } from './client'
 import { ShopeeTokens, ShopeeTokensStorage } from './storage'
 import { createServer } from 'http'
 import { parse as parseUrl } from 'url'
-import { ShopeeCategoryResponse } from './models'
 
 const partnerId = process.env.PARTNER_ID || ''
 const partnerKey = process.env.PARTNER_KEY || ''
@@ -42,7 +41,7 @@ client.setStorage(storage)
  * @param shopId 
  * @returns 
  */
-const runTest = async (code: string, shopId: string): Promise<ShopeeCategoryResponse> => {
+const runTest = async (code: string, shopId: string): Promise<any> => {
   await client.getAccessToken(code, shopId)
   const tokens = await storage.loadTokens(shopId)
   if (!tokens) {
@@ -51,7 +50,13 @@ const runTest = async (code: string, shopId: string): Promise<ShopeeCategoryResp
   const refreshed = await client.refreshToken(tokens.refresh_token, shopId)
   const context = client.createContext(refreshed, shopId)
   const categories = await context.getCategory()
-  return categories
+  const shopInfo = await context.getShopInfo()
+  const profileInfo = await context.getProfileInfo()
+  return {
+    shopInfo,
+    profileInfo,
+    categories,
+  }
 }
 
 /**

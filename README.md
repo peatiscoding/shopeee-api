@@ -121,6 +121,14 @@ const context = client.createContextFromStorage(shopId)
 const categories = await context.getCategory()
 ```
 
+### Currently Supported APIs
+
+```ts
+await context.getShopInfo()
+await context.getProfileInfo()
+await context.getCategory()
+```
+
 # To Test
 
 Configure your `.env` file. (See `.env.example`)
