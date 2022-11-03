@@ -1,8 +1,7 @@
-#!/usr/bin/env node
 import * as dotenv from 'dotenv' // or use `ts-node -r dotenv/config src/run.ts`
 dotenv.config()
-import open from 'open'
 
+import open from 'open'
 import { ShopeeOpenApiV2Client } from './client'
 import { ShopeeTokens, ShopeeTokensStorage } from './storage'
 import { createServer } from 'http'
@@ -28,6 +27,13 @@ const storage: ShopeeTokensStorage = {
 }
 client.setStorage(storage)
 
+/**
+ * Actual test suite to run
+ * 
+ * @param code 
+ * @param shopId 
+ * @returns 
+ */
 const runTest = async (code: string, shopId: string): Promise<ShopeeTokens> => {
   await client.getAccessToken(code, shopId)
   const tokens = await storage.loadTokens(shopId)
@@ -38,7 +44,9 @@ const runTest = async (code: string, shopId: string): Promise<ShopeeTokens> => {
   return refreshed
 }
 
-// Obtain these parameter from above URL.
+/**
+ * Our running orchastrator, make it easy to run the tests!
+ */
 const run = async () => {
   const url = client.getAuthorizationLink(`http://localhost:${port}/`)
   console.log('Opening URL', url)
@@ -52,19 +60,19 @@ const run = async () => {
     console.log('Intercepted code, shop_id', { code, shopId }, 'running tests')
     runTest(code, shopId)
       .then((message) => {
-        console.log('All good! Reply and shutting down our litte server.')
+        console.log('All good! Replied and shutting down our litte server.')
         res.statusCode = 200
         res.setHeader('content-type', 'application/json')
         res.write(JSON.stringify(message))
       })
       .catch((err) => {
-        console.log('Opps something failed during test', err)
+        console.log('Opps something failed during tests. Check the logs 🪵', err)
         res.statusCode = 500
         res.write(err && err.message || err)
       })
       .finally(() => {
         res.end()
-        console.log('all done bye bye.')
+        console.log('All done! bye bye 👋.')
         process.exit(0)
       })
   })
