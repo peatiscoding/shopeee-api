@@ -8,7 +8,10 @@
   "scripts": {
     "clean": "rm -rf dist/",
     "build": "tsup src/index.ts --format cjs,esm --dts --clean",
-    "test": "ts-node src/run.ts"
+    "test": "ts-node src/example.ts"
+  },
+  "engines": {
+    "node": ">=14"
   },
   "keywords": [
     "shopee"
@@ -17,6 +20,8 @@
   "license": "ISC",
   "devDependencies": {
     "@types/node": "^18.11.9",
+    "dotenv": "^16.0.3",
+    "open": "^8.4.0",
     "ts-node": "^10.9.1",
     "tsup": "^6.3.0",
     "typescript": "^4.8.4"

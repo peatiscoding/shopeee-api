@@ -11,7 +11,10 @@ import { ShopeeTokensStorage } from './storage'
  */
 export class ShopeeOpenApiV2Client {
 
-  private ax: AxiosInstance
+  /**
+   * Exposed ax instance to be used by consumer.
+   */
+  public readonly ax: AxiosInstance
   private readonly host: string
   private storage?: ShopeeTokensStorage
 
@@ -32,6 +35,19 @@ export class ShopeeOpenApiV2Client {
     // create axios instance.
     this.ax = axios.create({
       baseURL: this.host,
+    })
+
+    // Automatically sign the request
+    this.ax.interceptors.request.use((config) => {
+      if (config.url) {
+        const path = config.url
+        const s = this.sign(path)
+        config.params = config.params || {}
+        config.params.partner_id = this.partnerId
+        config.params.timestamp = s.timest
+        config.params.sign = s.signature
+      }
+      return config
     })
   }
 
@@ -61,16 +77,10 @@ export class ShopeeOpenApiV2Client {
       shop_id: +shopId,
       partner_id: +this.partnerId,
     }
-    const s = this.sign(path)
     const resp = await this.ax.post(path, body, {
       headers: {
         'Content-Type': 'application/json',
       },
-      params: {
-        partner_id: this.partnerId,
-        timestamp: s.timest,
-        sign: s.signature,
-      }
     })
     if (!resp || !resp.data) {
       throw new Error(`Invalid ShopeeAPI response, status: ${resp.status} with empty payload!`)
@@ -93,16 +103,10 @@ export class ShopeeOpenApiV2Client {
       shop_id: +shopId,
       partner_id: +this.partnerId,
     }
-    const s = this.sign(path)
     const resp = await this.ax.post(path, body, {
       headers: {
         'Content-Type': 'application/json',
       },
-      params: {
-        partner_id: this.partnerId,
-        timestamp: s.timest,
-        sign: s.signature,
-      }
     })
     if (!resp || !resp.data) {
       throw new Error(`Invalid ShopeeAPI response, status: ${resp.status} with empty payload!`)

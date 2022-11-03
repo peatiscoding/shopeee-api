@@ -94,3 +94,13 @@ client.setStorage({
 ```
 
 Once configured our client.getAccessToken() will now call `storage.saveTokens()` automatically.
+
+# To Test
+
+Configure your `.env` file. (See `.env.example`)
+
+then simply runs:
+
+```
+npm run test
+```
