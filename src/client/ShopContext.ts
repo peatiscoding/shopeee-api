@@ -80,13 +80,13 @@ export class ShopContext {
    * 
    * @see https://open.shopee.com/documents/v2/v2.product.get_item_list?module=89&type=1
    * 
-   * @param pageSize 
    * @param offset default is 0
+   * @param pageSize 
    * @param opts.updateTimeFrom
    * @param opts.updateTimeTo
    * @param opts.itemStatus
    */
-  public async getProductItemList(pageSize: number = 20, offset: number = 0, opts?: Partial<{ updateTimeFrom: number, updateTimeTo: number, itemStatus: ShopeeProductItemStatus[] }>): Promise<ShopeeProductGetItemListResponse> {
+  public async getProductItemList(offset = 0, pageSize: number = 20, opts?: Partial<{ updateTimeFrom: number, updateTimeTo: number, itemStatus: ShopeeProductItemStatus[] }>): Promise<ShopeeProductGetItemListResponse> {
     const path = '/api/v2/product/get_item_list'
     const resp = await this.ax.get(path, {
       params: {
