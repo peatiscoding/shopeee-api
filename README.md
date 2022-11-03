@@ -106,6 +106,8 @@ Within shopee APIs, there are APIs those do not need shop, and its accessToken, 
 
 We separate these API that need to aware of its context by let the consumer choose when to access it. And provide the set of Tokens Storage on your own. If your tokens has been mismanaged error will be thrown (complaining that the Token for such shopId is missing.) This error will be thrown when the desired API is invoked.
 
+Under this mode we will automatically detect for 403 http status, and perform refresh if the request is applicable.
+
 ```ts
 // TODO: Create the client with setStorage options.
 const context = client.createShopeContext(shopId)
