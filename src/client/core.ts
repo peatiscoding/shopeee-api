@@ -7,7 +7,6 @@ import {
 import { RequestSigner } from '../signer'
 import {
   InMemoryTokenStorage,
-  ShopeeTokens,
   ShopeeTokensStorage,
 } from '../storage'
 import { ShopContext } from './ShopContext'

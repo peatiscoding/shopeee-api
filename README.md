@@ -71,6 +71,9 @@ const tokens = await client.refreshToken('<current_refresh_token>', '<shop_id>')
 // }
 ```
 
+Note that `refreshToken` api is automatically invoked when use the Token in `Shop Context` mode. See (src/demo.ts) to see how
+we test for forcing system to refresh the token..
+
 ## Storage Features
 
 Consumer may opt-in to use Storage feature by implement the Storage interface and provide the storage implementation for
