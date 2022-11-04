@@ -122,6 +122,7 @@ await context.getShopInfo()
 await context.getProfileInfo()
 await context.getCategory()
 await context.getProductItemList(0, 20)
+await context.getProductAttributes(102067) // Get Product attributes by CategoryId
 ```
 
 # To Test
