@@ -93,8 +93,8 @@ export class ShopContext {
       params: {
         offset,
         page_size: pageSize,
-        update_time_from: opts?.updateTimeFrom,
-        update_time_to: opts?.updateTimeTo,
+        ...opts?.updateTimeFrom ? { update_time_from: opts?.updateTimeFrom } : {},
+        ...opts?.updateTimeTo ? { update_time_to: opts?.updateTimeTo } : {},
         item_status: opts?.itemStatus || ['NORMAL', 'UNLIST'],
       }
     })
