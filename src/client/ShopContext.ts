@@ -12,6 +12,7 @@ import {
   ShopeeProductGetItemListResponse,
   ShopeeProductItemStatus,
   ShopeeProductGetAttributesResponse,
+  ShopeeProductItemBaseInfoResponse,
 } from '../models'
 import {
   createShopeeAutoRefreshHandler,
@@ -93,8 +94,8 @@ export class ShopContext {
       params: {
         offset,
         page_size: pageSize,
-        update_time_from: opts?.updateTimeFrom,
-        update_time_to: opts?.updateTimeTo,
+        ...opts?.updateTimeFrom ? { update_time_from: opts?.updateTimeFrom } : {},
+        ...opts?.updateTimeTo ? { update_time_to: opts?.updateTimeTo } : {},
         item_status: opts?.itemStatus || ['NORMAL', 'UNLIST'],
       }
     })
@@ -118,4 +119,20 @@ export class ShopContext {
     })
     return resp.data as ShopeeProductGetAttributesResponse
   }
+
+
+  /**
+   * Fetch list of Shopee product detail by productId
+   * see https://open.shopee.com/documents/v2/v2.product.get_item_base_info?module=89&type=1
+   */
+  public async getProductsDetail(productIds: number[]): Promise<ShopeeProductItemBaseInfoResponse> {
+    const path = '/api/v2/product/get_item_base_info'
+    const resp = await this.ax.get(path, {
+      params: {
+        item_id_list: productIds.join()
+      }
+    })
+    return resp.data as ShopeeProductItemBaseInfoResponse
+  }
+
 }
