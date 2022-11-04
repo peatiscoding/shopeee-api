@@ -11,6 +11,7 @@ import {
   ShopeeProfileInfoResponse,
   ShopeeProductGetItemListResponse,
   ShopeeProductItemStatus,
+  ShopeeProductGetAttributesResponse,
 } from '../models'
 import {
   createShopeeAutoRefreshHandler,
@@ -98,5 +99,23 @@ export class ShopContext {
       }
     })
     return resp.data as ShopeeProductGetItemListResponse
+  }
+
+  /**
+   * Fetch attributes associated with given specific category.
+   * 
+   * @param categoryId
+   * @param language 
+   * @returns 
+   */
+  public async getProductAttributes(categoryId: number, language?: string): Promise<ShopeeProductGetAttributesResponse> {
+    const path = '/api/v2/product/get_attributes'
+    const resp = await this.ax.get(path, {
+      params: {
+        language,
+        category_id: categoryId,
+      }
+    })
+    return resp.data as ShopeeProductGetAttributesResponse
   }
 }
