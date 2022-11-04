@@ -37,6 +37,99 @@ export interface ShopeeProductAttribute {
   max_input_value_number: number
 }
 
+interface ShopeeProductBaseInfoDescriptionFieldList {
+  field_type: string
+  text?: string
+  image_info?: {
+    image_id: string
+    image_url: string
+  }
+}
+interface ShopeeProductBaseInfoLogisticInfo {
+  logistic_id: number
+  logistic_name: string
+  enabled: boolean
+  shipping_fee: number
+  is_free: boolean
+}
+interface ShopeeProductBaseInfoAttributeValue {
+  value_id: number
+  original_value_name: string
+  value_unit: string
+}
+
+interface ShopeeProductBaseInfoSellerStock {
+  location_id: string
+  stock: number
+}
+
+interface ShopeeProductBaseInfoPriceInfo {
+  currency: string
+  original_price: number
+  current_price: number
+}
+
+interface ShopeeProductBaseInfoAttribute {
+  attribute_id: number
+  original_attribute_name: number
+  is_mandatory: boolean
+  attribute_value_list: ShopeeProductBaseInfoAttributeValue[]
+}
+export interface ShopeeProductBaseInfo {
+  item_id: number
+  category_id: number
+  item_name: string
+  item_sku: string
+  create_time: number
+  update_time: number
+  attribute_list: ShopeeProductBaseInfoAttribute[]
+  price_info: ShopeeProductBaseInfoPriceInfo[]
+  stock_info_v2: {
+    summary_info: {
+      total_reserved_stock: number
+      total_available_stock: number
+    }
+    seller_stock: ShopeeProductBaseInfoSellerStock[]
+  }
+  image: {
+    image_url_list: string[]
+    image_id_list: string[]
+  }
+  weight: string
+  dimension: {
+    package_length: number
+    package_width: number
+    package_height: number
+  }
+  logistic_info: ShopeeProductBaseInfoLogisticInfo[]
+  pre_order: {
+    is_pre_order: boolean
+    days_to_ship: number
+  }
+  condition: string
+  size_chart: string
+  item_status: string
+  has_model: boolean
+  promotion_id: number
+  brand?: {
+    brand_id: number
+    original_brand_name: string
+  }
+  tax_info: {
+    ncm: number
+    same_state_cfop: number
+    diff_state_cfop: number
+    csosn: number
+    origin: number
+  }
+  description_type: string
+  description_info: {
+    extended_description: {
+      field_list: ShopeeProductBaseInfoDescriptionFieldList[]
+    }
+  }
+}
+
 /**
  * @see https://open.shopee.com/documents/v2/v2.product.get_attributes?module=89&type=1
  * 
@@ -67,10 +160,17 @@ export interface ShopeeProductAttribute {
  *   }
  * },
  * ```
- */ 
+ */
 export interface ShopeeProductGetAttributesResponse extends ShopeeBaseResponse {
   warning: string
   response: {
     attribute_list: ShopeeProductAttribute[]
+  }
+}
+
+export interface ShopeeProductItemBaseInfoResponse extends ShopeeBaseResponse {
+  warning: string
+  response: {
+    item_list: ShopeeProductBaseInfo[]
   }
 }
