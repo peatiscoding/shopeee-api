@@ -120,12 +120,14 @@ export class ShopContext {
     return resp.data as ShopeeProductGetAttributesResponse
   }
 
-
   /**
    * Fetch list of Shopee product detail by productId
    * see https://open.shopee.com/documents/v2/v2.product.get_item_base_info?module=89&type=1
+   * 
+   * @param productIds array of productIds
+   * @returns
    */
-  public async getProductsDetail(productIds: number[]): Promise<ShopeeProductItemBaseInfoResponse> {
+  public async getProductsItemBaseInfo(productIds: number[]): Promise<ShopeeProductItemBaseInfoResponse> {
     const path = '/api/v2/product/get_item_base_info'
     const resp = await this.ax.get(path, {
       params: {
