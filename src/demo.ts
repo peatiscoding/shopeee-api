@@ -126,7 +126,7 @@ const run = async (argShopId: string) => {
         setTimeout(() => {
           console.log('All done! Shutting down our litte server. bye bye 👋.')
           process.exit(0)
-        }, 1500)
+        }, 500)
       })
   })
 
