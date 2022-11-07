@@ -13,6 +13,7 @@ import {
   ShopeeProductItemStatus,
   ShopeeProductGetAttributesResponse,
   ShopeeProductItemBaseInfoResponse,
+  ShopeeProductModelListResponse,
 } from '../models'
 import {
   createShopeeAutoRefreshHandler,
@@ -135,6 +136,23 @@ export class ShopContext {
       }
     })
     return resp.data as ShopeeProductItemBaseInfoResponse
+  }
+
+  /**
+   * Fetch list of Shopee product detail by productId
+   * see https://open.shopee.com/documents/v2/v2.product.get_model_list?module=89&type=1
+   * 
+   * @param productId number
+   * @returns
+   */
+  public async getProductModelList(productId: number): Promise<ShopeeProductModelListResponse> {
+    const path = '/api/v2/product/get_model_list'
+    const resp = await this.ax.get(path, {
+      params: {
+        item_id: productId,
+      }
+    })
+    return resp.data as ShopeeProductModelListResponse
   }
 
 }
