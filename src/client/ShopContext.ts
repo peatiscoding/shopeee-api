@@ -14,6 +14,8 @@ import {
   ShopeeProductGetAttributesResponse,
   ShopeeProductItemBaseInfoResponse,
   ShopeeProductModelListResponse,
+  ShopeeOrderStatus,
+  ShopeeGetOrderListResponse,
 } from '../models'
 import {
   createShopeeAutoRefreshHandler,
@@ -154,5 +156,32 @@ export class ShopContext {
     })
     return resp.data as ShopeeProductModelListResponse
   }
+
+
+  /**
+   * Fetch list of Shopee order list
+   * see https://open.shopee.com/documents/v2/v2.order.get_order_list?module=94&type=1
+   * 
+   * @param offset
+   * @param pageSize
+   * @param opts.timeFrom
+   * @param opts.timeTo
+   * @param opts.orderStatus
+   * @returns
+   */
+  public async getOrderList(offset = 0, pageSize: number = 20, opts?: Partial<{ timeFrom: number, timeTo: number, itemStatus: ShopeeOrderStatus[] }>): Promise<ShopeeGetOrderListResponse> {
+    const path = '/api/v2/order/get_order_list'
+    const resp = await this.ax.get(path, {
+      params: {
+        ...offset ? { cursor: `${offset}` } : {},
+        page_size: pageSize,
+        ...opts?.timeFrom ? { time_from: opts?.timeFrom } : {},
+        ...opts?.timeTo ? { time_to: opts?.timeTo } : {},
+        item_status: opts?.itemStatus || ['NORMAL', 'UNLIST'],
+      }
+    })
+    return resp.data as ShopeeGetOrderListResponse
+  }
+
 
 }
