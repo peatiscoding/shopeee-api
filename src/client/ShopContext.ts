@@ -16,6 +16,7 @@ import {
   ShopeeProductModelListResponse,
   ShopeeOrderStatus,
   ShopeeGetOrderListResponse,
+  ShopeeOrdersDetailResponse,
 } from '../models'
 import {
   createShopeeAutoRefreshHandler,
