@@ -172,7 +172,7 @@ export class ShopContext {
    * @param opts.orderStatus
    * @returns
    */
-  public async getOrderList(offset: number = 0, pageSize: number = 20, opts?: Partial<{ timeRangeField: 'create_time' | 'update_time', timeFrom: number, timeTo: number, itemStatus: ShopeeOrderStatus }>): Promise<ShopeeGetOrderListResponse> {
+  public async getOrderList(offset: number = 0, pageSize: number = 20, opts?: Partial<{ timeRangeField: 'create_time' | 'update_time', timeFrom: number, timeTo: number, orderStatus: ShopeeOrderStatus }>): Promise<ShopeeGetOrderListResponse> {
     const path = '/api/v2/order/get_order_list'
     const resp = await this.ax.get(path, {
       params: {
@@ -181,7 +181,7 @@ export class ShopContext {
         time_range_field: opts?.timeRangeField || 'create_time',
         time_from: opts?.timeFrom || Math.floor(new Date().getTime() / 1000) - (ONE_DAY_IN_SECONDS * 15),
         time_to: opts?.timeTo || Math.floor(new Date().getTime() / 1000),
-        item_status: opts?.itemStatus || 'READY_TO_SHIP',
+        order_status: opts?.orderStatus || 'READY_TO_SHIP',
       }
     })
     return resp.data as ShopeeGetOrderListResponse
