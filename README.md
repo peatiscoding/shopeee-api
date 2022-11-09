@@ -124,6 +124,7 @@ await context.getCategory()
 const products = await context.getProductItemList(0, 20)
 await context.getProductAttributes(102067) // Get Product attributes by CategoryId
 await context.getProductModelList(102067)
+await context.getOrderList(0, 10)
 const productDetails = await context.getProductsItemBaseInfo(products.response.item.map((o) => o.item_id))
 ```
 

@@ -24,6 +24,8 @@ import {
 } from './utils'
 import { RequestSigner } from '../signer'
 
+const ONE_DAY_IN_SECONDS = 86400
+
 export class ShopContext {
   public readonly ax: AxiosInstance
 
@@ -170,15 +172,16 @@ export class ShopContext {
    * @param opts.orderStatus
    * @returns
    */
-  public async getOrderList(offset: number = 0, pageSize: number = 20, opts?: Partial<{ timeFrom: number, timeTo: number, itemStatus: ShopeeOrderStatus[] }>): Promise<ShopeeGetOrderListResponse> {
+  public async getOrderList(offset: number = 0, pageSize: number = 20, opts?: Partial<{ timeRangeField: 'create_time' | 'update_time', timeFrom: number, timeTo: number, itemStatus: ShopeeOrderStatus }>): Promise<ShopeeGetOrderListResponse> {
     const path = '/api/v2/order/get_order_list'
     const resp = await this.ax.get(path, {
       params: {
         ...offset ? { cursor: `${offset}` } : {},
         page_size: pageSize,
-        ...opts?.timeFrom ? { time_from: opts?.timeFrom } : {},
-        ...opts?.timeTo ? { time_to: opts?.timeTo } : {},
-        item_status: opts?.itemStatus || ['NORMAL', 'UNLIST'],
+        time_range_field: opts?.timeRangeField || 'create_time',
+        time_from: opts?.timeFrom || Math.floor(new Date().getTime() / 1000) - (ONE_DAY_IN_SECONDS * 15),
+        time_to: opts?.timeTo || Math.floor(new Date().getTime() / 1000),
+        item_status: opts?.itemStatus || 'READY_TO_SHIP',
       }
     })
     return resp.data as ShopeeGetOrderListResponse

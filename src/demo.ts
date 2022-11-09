@@ -81,9 +81,11 @@ const runTest = async (code: string, shopId: string): Promise<any> => {
   const products2 = await context.getProductItemList(10, 3)
   const products1 = await context.getProductItemList(0, 10)
   const productDetails = await context.getProductsItemBaseInfo(products1.response.item.map((o) => o.item_id))
+  const orders = await context.getOrderList(0, 10)
   return {
     shopInfo,
     profileInfo,
+    orders,
     productDetails,
     products2,
     products1,
