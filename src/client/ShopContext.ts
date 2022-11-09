@@ -91,7 +91,7 @@ export class ShopContext {
    * @param opts.updateTimeTo
    * @param opts.itemStatus
    */
-  public async getProductItemList(offset = 0, pageSize: number = 20, opts?: Partial<{ updateTimeFrom: number, updateTimeTo: number, itemStatus: ShopeeProductItemStatus[] }>): Promise<ShopeeProductGetItemListResponse> {
+  public async getProductItemList(offset: number = 0, pageSize: number = 20, opts?: Partial<{ updateTimeFrom: number, updateTimeTo: number, itemStatus: ShopeeProductItemStatus[] }>): Promise<ShopeeProductGetItemListResponse> {
     const path = '/api/v2/product/get_item_list'
     const resp = await this.ax.get(path, {
       params: {
@@ -169,7 +169,7 @@ export class ShopContext {
    * @param opts.orderStatus
    * @returns
    */
-  public async getOrderList(offset = 0, pageSize: number = 20, opts?: Partial<{ timeFrom: number, timeTo: number, itemStatus: ShopeeOrderStatus[] }>): Promise<ShopeeGetOrderListResponse> {
+  public async getOrderList(offset: number = 0, pageSize: number = 20, opts?: Partial<{ timeFrom: number, timeTo: number, itemStatus: ShopeeOrderStatus[] }>): Promise<ShopeeGetOrderListResponse> {
     const path = '/api/v2/order/get_order_list'
     const resp = await this.ax.get(path, {
       params: {
@@ -183,5 +183,14 @@ export class ShopContext {
     return resp.data as ShopeeGetOrderListResponse
   }
 
+  public async getOrdersDetail(orderSn: string[]): Promise<ShopeeOrdersDetailResponse> {
+    const path = '/api/v2/order/get_order_detail'
+    const resp = await this.ax.get(path, {
+      params: {
+        order_sn_list: orderSn.join()
+      }
+    })
+    return resp.data as ShopeeOrdersDetailResponse
+  }
 
 }
