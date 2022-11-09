@@ -14,6 +14,9 @@ import {
   ShopeeProductGetAttributesResponse,
   ShopeeProductItemBaseInfoResponse,
   ShopeeProductModelListResponse,
+  ShopeeOrderStatus,
+  ShopeeGetOrderListResponse,
+  ShopeeOrdersDetailResponse,
 } from '../models'
 import {
   createShopeeAutoRefreshHandler,
@@ -89,7 +92,7 @@ export class ShopContext {
    * @param opts.updateTimeTo
    * @param opts.itemStatus
    */
-  public async getProductItemList(offset = 0, pageSize: number = 20, opts?: Partial<{ updateTimeFrom: number, updateTimeTo: number, itemStatus: ShopeeProductItemStatus[] }>): Promise<ShopeeProductGetItemListResponse> {
+  public async getProductItemList(offset: number = 0, pageSize: number = 20, opts?: Partial<{ updateTimeFrom: number, updateTimeTo: number, itemStatus: ShopeeProductItemStatus[] }>): Promise<ShopeeProductGetItemListResponse> {
     const path = '/api/v2/product/get_item_list'
     const resp = await this.ax.get(path, {
       params: {
@@ -153,6 +156,42 @@ export class ShopContext {
       }
     })
     return resp.data as ShopeeProductModelListResponse
+  }
+
+
+  /**
+   * Fetch list of Shopee order list
+   * see https://open.shopee.com/documents/v2/v2.order.get_order_list?module=94&type=1
+   * 
+   * @param offset
+   * @param pageSize
+   * @param opts.timeFrom
+   * @param opts.timeTo
+   * @param opts.orderStatus
+   * @returns
+   */
+  public async getOrderList(offset: number = 0, pageSize: number = 20, opts?: Partial<{ timeFrom: number, timeTo: number, itemStatus: ShopeeOrderStatus[] }>): Promise<ShopeeGetOrderListResponse> {
+    const path = '/api/v2/order/get_order_list'
+    const resp = await this.ax.get(path, {
+      params: {
+        ...offset ? { cursor: `${offset}` } : {},
+        page_size: pageSize,
+        ...opts?.timeFrom ? { time_from: opts?.timeFrom } : {},
+        ...opts?.timeTo ? { time_to: opts?.timeTo } : {},
+        item_status: opts?.itemStatus || ['NORMAL', 'UNLIST'],
+      }
+    })
+    return resp.data as ShopeeGetOrderListResponse
+  }
+
+  public async getOrdersDetail(orderSn: string[]): Promise<ShopeeOrdersDetailResponse> {
+    const path = '/api/v2/order/get_order_detail'
+    const resp = await this.ax.get(path, {
+      params: {
+        order_sn_list: orderSn.join()
+      }
+    })
+    return resp.data as ShopeeOrdersDetailResponse
   }
 
 }
