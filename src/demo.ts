@@ -82,6 +82,22 @@ const runTest = async (code: string, shopId: string): Promise<any> => {
   const products1 = await context.getProductItemList(0, 10)
   const productDetails = await context.getProductsItemBaseInfo(products1.response.item.map((o) => o.item_id))
   const orders = await context.getOrderList(0, 10)
+  // const updateProductStock = await context.updateProductStock({
+  //   item_id: 3453714549,
+  //   stock_list: [{
+  //     model_id: 0,
+  //     seller_stock: [{
+  //       stock: 27
+  //     }]
+  //   }]
+  // })
+  // const updateProductPrice = await context.updateProductPrice({
+  //   item_id: 3453714549,
+  //   price_list: [{
+  //     model_id: 0,
+  //     original_price: 7200
+  //   }]
+  // })
   return {
     shopInfo,
     profileInfo,
@@ -91,6 +107,8 @@ const runTest = async (code: string, shopId: string): Promise<any> => {
     products1,
     attributeForFirstCategory,
     categories,
+    // updateProductStock,
+    // updateProductPrice,
   }
 }
 
