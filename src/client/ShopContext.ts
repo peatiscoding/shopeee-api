@@ -17,6 +17,10 @@ import {
   ShopeeOrderStatus,
   ShopeeGetOrderListResponse,
   ShopeeOrdersDetailResponse,
+  ShopeeUpdateProductStockResponse,
+  ShopeeUpdateProductStockInput,
+  ShopeeUpdateProductPriceInput,
+  ShopeeUpdateProductPriceResponse,
 } from '../models'
 import {
   createShopeeAutoRefreshHandler,
@@ -195,6 +199,18 @@ export class ShopContext {
       }
     })
     return resp.data as ShopeeOrdersDetailResponse
+  }
+
+  public async updateProductStock(updateProductStockInput: ShopeeUpdateProductStockInput): Promise<ShopeeUpdateProductStockResponse> {
+    const path = '/api/v2/product/update_stock'
+    const resp = await this.ax.post(path, updateProductStockInput)
+    return resp.data as ShopeeUpdateProductStockResponse
+  }
+
+  public async updateProductPrice(updateProductPriceInput: ShopeeUpdateProductPriceInput): Promise<ShopeeUpdateProductPriceResponse> {
+    const path = '/api/v2/product/update_price'
+    const resp = await this.ax.post(path, updateProductPriceInput)
+    return resp.data as ShopeeUpdateProductPriceResponse
   }
 
 }
