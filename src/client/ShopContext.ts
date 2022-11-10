@@ -21,6 +21,7 @@ import {
   ShopeeUpdateProductStockInput,
   ShopeeUpdateProductPriceInput,
   ShopeeUpdateProductPriceResponse,
+  ShopeeGetAddressListResponse,
 } from '../models'
 import {
   createShopeeAutoRefreshHandler,
@@ -213,4 +214,16 @@ export class ShopContext {
     return resp.data as ShopeeUpdateProductPriceResponse
   }
 
+
+  /**
+   * Fetch list of address of Shop
+   * see https://open.shopee.com/documents/v2/v2.logistics.get_address_list?module=95&type=1
+  */
+  public async getAddressList(): Promise<ShopeeGetAddressListResponse> {
+    const path = '/api/v2/logistics/get_address_list'
+    const resp = await this.ax.get(path, {
+      params: {}
+    })
+    return resp.data as ShopeeGetAddressListResponse
+  }
 }
