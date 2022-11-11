@@ -126,6 +126,9 @@ await context.getProductAttributes(102067) // Get Product attributes by Category
 await context.getProductModelList(102067)
 await context.getOrderList(0, 10)
 const productDetails = await context.getProductsItemBaseInfo(products.response.item.map((o) => o.item_id))
+await context.getAddressList()
+await context.getLogisticChannelList()
+await context.handleBuyerCancellation({ "order_sn": "<some-order-id>", "operation": "REJECT" })
 ```
 
 # To Test
