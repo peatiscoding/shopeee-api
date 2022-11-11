@@ -98,6 +98,7 @@ const runTest = async (code: string, shopId: string): Promise<any> => {
   //     original_price: 7200
   //   }]
   // })
+  const address = await context.getAddressList()
   return {
     shopInfo,
     profileInfo,
@@ -107,6 +108,7 @@ const runTest = async (code: string, shopId: string): Promise<any> => {
     products1,
     attributeForFirstCategory,
     categories,
+    address,
     // updateProductStock,
     // updateProductPrice,
   }

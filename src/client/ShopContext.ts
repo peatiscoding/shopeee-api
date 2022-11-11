@@ -21,6 +21,11 @@ import {
   ShopeeUpdateProductStockInput,
   ShopeeUpdateProductPriceInput,
   ShopeeUpdateProductPriceResponse,
+  ShopeeGetAddressListResponse,
+  ShopeeHandleBuyerCancellationInput,
+  ShopeeHandleBuyerCancellationResponse,
+  ShopeeCancelOrderInput,
+  ShopeeCancelOrderResponse,
 } from '../models'
 import {
   createShopeeAutoRefreshHandler,
@@ -213,4 +218,48 @@ export class ShopContext {
     return resp.data as ShopeeUpdateProductPriceResponse
   }
 
+
+  /**
+   * Fetch list of address of Shop
+   * see https://open.shopee.com/documents/v2/v2.logistics.get_address_list?module=95&type=1
+  */
+  public async getAddressList(): Promise<ShopeeGetAddressListResponse> {
+    const path = '/api/v2/logistics/get_address_list'
+    const resp = await this.ax.get(path, {
+      params: {}
+    })
+    return resp.data as ShopeeGetAddressListResponse
+  }
+
+  /**
+   * Fetch channel list of logistic
+   * see https://open.shopee.com/documents/v2/v2.logistics.get_channel_list?module=95&type=1
+  */
+   public async getLogisticChannelList(): Promise<ShopeeGetAddressListResponse> {
+    const path = '/api/v2/logistics/get_channel_list'
+    const resp = await this.ax.get(path, {
+      params: {}
+    })
+    return resp.data as ShopeeGetAddressListResponse
+  }
+
+  /**
+   * handle buyer's cancellation application.
+   * see https://open.shopee.com/documents/v2/v2.order.handle_buyer_cancellation?module=94&type=1
+  */
+  public async handleBuyerCancellation(handleBuyerCancellationInput: ShopeeHandleBuyerCancellationInput): Promise<ShopeeHandleBuyerCancellationResponse> {
+    const path = '/api/v2/order/handle_buyer_cancellation'
+    const resp = await this.ax.post(path, handleBuyerCancellationInput)
+    return resp.data as ShopeeHandleBuyerCancellationResponse
+  }
+
+  /**
+   * handle cancel order
+   * see https://open.shopee.com/documents/v2/v2.order.cancel_order?module=94&type=1
+  */
+  public async cancelOrder(cancelOrderInput: ShopeeCancelOrderInput): Promise<ShopeeCancelOrderResponse> {
+    const path = '/api/v2/order/cancel_order'
+    const resp = await this.ax.post(path, cancelOrderInput)
+    return resp.data as ShopeeHandleBuyerCancellationResponse
+  }
 }
