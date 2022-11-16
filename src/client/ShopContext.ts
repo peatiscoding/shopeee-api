@@ -272,7 +272,7 @@ export class ShopContext {
     const path = '/api/v2/logistics/get_shipping_parameter'
     const resp = await this.ax.get(path, {
       params: {
-        orderSn,
+        order_sn:orderSn,
       }
     })
     return resp.data as ShopeeGetShippingParameterResponse
