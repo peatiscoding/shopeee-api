@@ -19,6 +19,7 @@ import {
   writeFileSync,
   existsSync,
 } from 'fs'
+import { ShopeeGetShippingParameterResponse } from './models'
 
 const partnerId = process.env.PARTNER_ID || ''
 const partnerKey = process.env.PARTNER_KEY || ''
@@ -98,6 +99,11 @@ const runTest = async (code: string, shopId: string): Promise<any> => {
   //     original_price: 7200
   //   }]
   // })
+  const orderList = orders?.response?.order_list || []
+  let shippingParams: ShopeeGetShippingParameterResponse | undefined = undefined
+  if (orderList.length > 0) {
+    shippingParams = await context.getShippingParameter(orderList[0].order_sn)
+  }
   const address = await context.getAddressList()
   return {
     shopInfo,
@@ -109,6 +115,7 @@ const runTest = async (code: string, shopId: string): Promise<any> => {
     attributeForFirstCategory,
     categories,
     address,
+    shippingParams,
     // updateProductStock,
     // updateProductPrice,
   }

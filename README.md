@@ -129,6 +129,7 @@ const productDetails = await context.getProductsItemBaseInfo(products.response.i
 await context.getAddressList()
 await context.getLogisticChannelList()
 await context.handleBuyerCancellation({ "order_sn": "<some-order-id>", "operation": "REJECT" })
+await context.getgetShippingParameter("<some-order-id>")
 ```
 
 # To Test
