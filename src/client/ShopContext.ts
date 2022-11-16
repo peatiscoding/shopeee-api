@@ -26,6 +26,7 @@ import {
   ShopeeHandleBuyerCancellationResponse,
   ShopeeCancelOrderInput,
   ShopeeCancelOrderResponse,
+  ShopeeGetShippingParameterResponse,
 } from '../models'
 import {
   createShopeeAutoRefreshHandler,
@@ -235,7 +236,7 @@ export class ShopContext {
    * Fetch channel list of logistic
    * see https://open.shopee.com/documents/v2/v2.logistics.get_channel_list?module=95&type=1
   */
-   public async getLogisticChannelList(): Promise<ShopeeGetAddressListResponse> {
+  public async getLogisticChannelList(): Promise<ShopeeGetAddressListResponse> {
     const path = '/api/v2/logistics/get_channel_list'
     const resp = await this.ax.get(path, {
       params: {}
@@ -261,5 +262,19 @@ export class ShopContext {
     const path = '/api/v2/order/cancel_order'
     const resp = await this.ax.post(path, cancelOrderInput)
     return resp.data as ShopeeHandleBuyerCancellationResponse
+  }
+
+  /**
+   * handle get shipping parameter
+   * see https://open.shopee.com/documents/v2/v2.logistics.get_shipping_parameter?module=95&type=1
+  */
+  public async getShippingParameter(orderSn: string): Promise<ShopeeGetShippingParameterResponse> {
+    const path = '/api/v2/logistics/get_shipping_parameter'
+    const resp = await this.ax.get(path, {
+      params: {
+        order_sn:orderSn,
+      }
+    })
+    return resp.data as ShopeeGetShippingParameterResponse
   }
 }
