@@ -1,6 +1,6 @@
 {
   "name": "shopeee-api",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "description": "Very dirty implementation of ShopeeAPI client",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
