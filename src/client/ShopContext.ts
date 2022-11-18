@@ -27,6 +27,8 @@ import {
   ShopeeCancelOrderInput,
   ShopeeCancelOrderResponse,
   ShopeeGetShippingParameterResponse,
+  ShopeeShipOrderInput,
+  ShopeeShipOrderResponse,
 } from '../models'
 import {
   createShopeeAutoRefreshHandler,
@@ -276,5 +278,15 @@ export class ShopContext {
       }
     })
     return resp.data as ShopeeGetShippingParameterResponse
+  }
+
+  /**
+   * handle ship order
+   * see https://open.shopee.com/documents/v2/v2.logistics.ship_order?module=95&type=1
+  */
+  public async shipOrder(shipOrderInput: ShopeeShipOrderInput): Promise<ShopeeShipOrderResponse> {
+    const path = '/api/v2/logistics/ship_order'
+    const resp = await this.ax.post(path, shipOrderInput)
+    return resp.data as ShopeeShipOrderResponse
   }
 }
