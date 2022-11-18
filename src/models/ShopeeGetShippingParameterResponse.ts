@@ -20,7 +20,7 @@ interface ShopeeGetShippingParameterAddress {
 }
 
 interface ShopeeGetShippingParameterPickup {
-  address_list: ShopeeGetShippingParameterAddress
+  address_list: ShopeeGetShippingParameterAddress[]
 }
 
 interface ShopeeGetShippingParameterSlug {

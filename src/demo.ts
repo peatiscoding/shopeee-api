@@ -103,6 +103,34 @@ const runTest = async (code: string, shopId: string): Promise<any> => {
   let shippingParams: ShopeeGetShippingParameterResponse | undefined = undefined
   if (orderList.length > 0) {
     shippingParams = await context.getShippingParameter(orderList[0].order_sn)
+    if (shippingParams?.response?.info_needed?.pickup?.length && shippingParams.response?.pickup?.address_list?.length) {
+      const pickupAddress = shippingParams.response?.pickup?.address_list[0]
+      await context.shipOrder({
+        order_sn: orderList[0].order_sn,
+        pickup: {
+          address_id: pickupAddress.address_id,
+          pickup_time_id: pickupAddress.time_slot_list[0].pickup_time_id
+        }
+      })
+    }
+    if (shippingParams?.response?.info_needed?.dropoff?.length && shippingParams.response.dropoff?.branch_list?.length) {
+      const branch = shippingParams.response.dropoff?.branch_list[0]
+      await context.shipOrder({
+        order_sn: orderList[0].order_sn,
+        dropoff: {
+          branch_id: branch.branch_id,
+        }
+      })
+    }
+    if (shippingParams.response.info_needed?.non_integrated?.length) {
+      await context.shipOrder({
+        order_sn: orderList[0].order_sn,
+        non_integrated: {
+          tracking_number: "Track number xxx"
+        }
+      })
+    }
+
   }
   const address = await context.getAddressList()
   return {
