@@ -1,24 +1,18 @@
 import { ShopeeBaseResponse } from '.'
-
 interface ShopeeShipOrderPickup {
   address_id?: number
   pickup_time_id?: string
   tracking_number?: string
 }
-
 interface ShopeeShipOrderDropOff {
   branch_id?: number
   sender_real_name?: string
   tracking_number?: string
   slug?: string
 }
-
 interface ShopeeShipOrderNonIntegrated {
-  tracking_numbe?: string
+  tracking_number?: string
 }
-
-
-
 export interface ShopeeShipOrderInput {
   order_sn: string
   package_number?: string

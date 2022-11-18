@@ -129,7 +129,20 @@ const productDetails = await context.getProductsItemBaseInfo(products.response.i
 await context.getAddressList()
 await context.getLogisticChannelList()
 await context.handleBuyerCancellation({ "order_sn": "<some-order-id>", "operation": "REJECT" })
-await context.getgetShippingParameter("<some-order-id>")
+await context.getShippingParameter("<some-order-id>")
+await context.shipOrder({ 
+  "order_sn": "<some-order-id>",
+  "pickup":{
+    "address_id": "<some address id from pickup in shipping parameter>",
+    "pickup_time_id": "<some pick up time id from pickup in shipping parameter>"
+  }
+  "dropoff":{
+    "branch_id": "<some branch id from dropoff[branch_list] in shipping parameter>",
+  }
+  "non_integrated":{
+    "tracking_number": "<some tracking number>"
+  }
+})
 ```
 
 # To Test
