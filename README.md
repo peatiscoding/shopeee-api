@@ -143,6 +143,10 @@ await context.shipOrder({
     "tracking_number": "<some tracking number>"
   }
 })
+await context.downloadShippingDocument({
+  "shipping_document_type":"NORMAL_AIR_WAYBILL" ,
+  "order_list": [{"order_sn":"<some-order-id>"}]
+})
 ```
 
 # To Test

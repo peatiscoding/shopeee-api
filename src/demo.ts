@@ -100,6 +100,7 @@ const runTest = async (code: string, shopId: string): Promise<any> => {
   //   }]
   // })
   const orderList = orders?.response?.order_list || []
+  let airWaybill = null
   let shippingParams: ShopeeGetShippingParameterResponse | undefined = undefined
   if (orderList.length > 0) {
     shippingParams = await context.getShippingParameter(orderList[0].order_sn)
@@ -130,7 +131,7 @@ const runTest = async (code: string, shopId: string): Promise<any> => {
         }
       })
     }
-
+    airWaybill = await context.downloadShippingDocument({ shipping_document_type: 'NORMAL_AIR_WAYBILL', order_list: [{ order_sn: orderList[0].order_sn }] })
   }
   const address = await context.getAddressList()
   return {
@@ -144,6 +145,7 @@ const runTest = async (code: string, shopId: string): Promise<any> => {
     categories,
     address,
     shippingParams,
+    airWaybill,
     // updateProductStock,
     // updateProductPrice,
   }
