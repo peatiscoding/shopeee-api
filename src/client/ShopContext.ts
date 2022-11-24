@@ -29,6 +29,8 @@ import {
   ShopeeGetShippingParameterResponse,
   ShopeeShipOrderInput,
   ShopeeShipOrderResponse,
+  ShopeeDownloadShippingDocumentInput,
+  ShopeeDownloadShippingDocumentResponse
 } from '../models'
 import {
   createShopeeAutoRefreshHandler,
@@ -289,4 +291,15 @@ export class ShopContext {
     const resp = await this.ax.post(path, shipOrderInput)
     return resp.data as ShopeeShipOrderResponse
   }
+
+  /**
+   * download shopee download shipping document
+   * see https://open.shopee.com/documents/v2/v2.logistics.download_shipping_document?module=95&type=1
+  */
+  public async downloadShippingDocument(downloadShippingDocumentInput: ShopeeDownloadShippingDocumentInput): Promise<ShopeeDownloadShippingDocumentResponse> {
+    const path = '/api/v2/logistics/download_shipping_document'
+    const resp = await this.ax.post(path, downloadShippingDocumentInput)
+    return resp.data as ShopeeDownloadShippingDocumentResponse
+  }
+
 }
