@@ -203,7 +203,15 @@ export class ShopContext {
     const path = '/api/v2/order/get_order_detail'
     const resp = await this.ax.get(path, {
       params: {
-        order_sn_list: orderSn.join()
+        order_sn_list: orderSn.join(),
+        response_optional_fields:[
+          'buyer_username',
+          'total_amount',
+          'estimated_shipping_fee',
+          'item_list',
+          'payment_method',
+          'shipping_carrier',
+        ].join(),
       }
     })
     return resp.data as ShopeeOrdersDetailResponse
