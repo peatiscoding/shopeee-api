@@ -29,6 +29,7 @@ import {
   ShopeeGetShippingParameterResponse,
   ShopeeShipOrderInput,
   ShopeeShipOrderResponse,
+  OrderDetailResponeOptionalFields,
 } from '../models'
 import {
   createShopeeAutoRefreshHandler,
@@ -199,11 +200,12 @@ export class ShopContext {
     return resp.data as ShopeeGetOrderListResponse
   }
 
-  public async getOrdersDetail(orderSn: string[]): Promise<ShopeeOrdersDetailResponse> {
+  public async getOrdersDetail(orderSn: string[], optionFields: OrderDetailResponeOptionalFields[]): Promise<ShopeeOrdersDetailResponse> {
     const path = '/api/v2/order/get_order_detail'
     const resp = await this.ax.get(path, {
       params: {
-        order_sn_list: orderSn.join()
+        order_sn_list: orderSn.join(),
+        response_optional_fields: optionFields.join(),
       }
     })
     return resp.data as ShopeeOrdersDetailResponse
