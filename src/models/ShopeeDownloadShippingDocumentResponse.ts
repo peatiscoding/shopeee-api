@@ -6,7 +6,7 @@ interface ShopeeDownloadShippingDocumentOrder {
 }
 
 export interface ShopeeDownloadShippingDocumentInput {
-  shipping_document_type: 'NORMAL_AIR_WAYBILL' | 'THERMAL_AIR_WAYBILL' | 'NORMAL_JOB_AIR_WAYBILL' | 'THERMAL_JOB_AIR_WAYBILL'
+  shipping_document_type?: 'NORMAL_AIR_WAYBILL' | 'THERMAL_AIR_WAYBILL' | 'NORMAL_JOB_AIR_WAYBILL' | 'THERMAL_JOB_AIR_WAYBILL'
   order_list: ShopeeDownloadShippingDocumentOrder[]
 }
 

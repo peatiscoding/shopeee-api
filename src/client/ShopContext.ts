@@ -30,7 +30,13 @@ import {
   ShopeeShipOrderInput,
   ShopeeShipOrderResponse,
   ShopeeDownloadShippingDocumentInput,
-  ShopeeDownloadShippingDocumentResponse
+  ShopeeDownloadShippingDocumentResponse,
+  ShopeeGetShippingDocumentInput,
+  ShopeeGetShippingDocumentResponse,
+  ShopeeGetShippingDocumentResultInput,
+  ShopeeGetShippingDocumentResultResponse,
+  ShopeeCreateShippingDocumentInput,
+  ShopeeCreateShippingDocumentResponse,
 } from '../models'
 import {
   createShopeeAutoRefreshHandler,
@@ -205,7 +211,15 @@ export class ShopContext {
     const path = '/api/v2/order/get_order_detail'
     const resp = await this.ax.get(path, {
       params: {
-        order_sn_list: orderSn.join()
+        order_sn_list: orderSn.join(),
+        response_optional_fields:[
+          'buyer_username',
+          'total_amount',
+          'estimated_shipping_fee',
+          'item_list',
+          'payment_method',
+          'shipping_carrier',
+        ].join(),
       }
     })
     return resp.data as ShopeeOrdersDetailResponse
@@ -302,4 +316,34 @@ export class ShopContext {
     return resp.data as ShopeeDownloadShippingDocumentResponse
   }
 
+  /**
+   * download shopee download shipping document
+   * see https://open.shopee.com/documents/v2/v2.logistics.get_shipping_document_parameter?module=95&type=1
+  */
+  public async getShippingDocumentParameter(getShippingDocumentInput: ShopeeGetShippingDocumentInput): Promise<ShopeeGetShippingDocumentResponse> {
+    const path = '/api/v2/logistics/get_shipping_document_parameter'
+    const resp = await this.ax.post(path, getShippingDocumentInput)
+    return resp.data as ShopeeGetShippingDocumentResponse
+  }
+
+
+  /**
+   * download shopee download shipping document
+   * see https://open.shopee.com/documents/v2/v2.logistics.get_shipping_document_result?module=95&type=1
+  */
+  public async getShippingDocumentResult(getShippingDocumentResultInput: ShopeeGetShippingDocumentResultInput): Promise<ShopeeGetShippingDocumentResultResponse> {
+    const path = '/api/v2/logistics/get_shipping_document_result'
+    const resp = await this.ax.post(path, getShippingDocumentResultInput)
+    return resp.data as ShopeeGetShippingDocumentResultResponse
+  }
+
+  /**
+   * download shopee download shipping document
+   * see https://open.shopee.com/documents/v2/v2.logistics.create_shipping_document?module=95&type=1
+  */
+  public async createShippingDocument(createShippingDocumentInput: ShopeeCreateShippingDocumentInput): Promise<ShopeeCreateShippingDocumentResponse> {
+    const path = '/api/v2/logistics/create_shipping_document'
+    const resp = await this.ax.post(path, createShippingDocumentInput)
+    return resp.data as ShopeeCreateShippingDocumentResponse
+  }
 }
